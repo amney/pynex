@@ -1,7 +1,16 @@
 #!/bin/env python
 
+try:
+    import cisco
+except ImportError:
+    class cisco(object):
+        @staticmethod
+        def cli(command):
+            return '%s called to underlying ios' % command
+        class cli_execution_error(BaseException):
+            pass
+
 from utilities import RollBack, saves, saves_improved
-import cisco
 
 @saves
 def set_hostname(hostname):
@@ -25,11 +34,11 @@ def critical_code():
 
 def main():
     set_hostname('saves')
-    print cisco.cli('show start | grep hostname')
+    print 'hostname saves' == cisco.cli('show start | grep hostname')
     set_hostname_improved('saves-improved')
-    print cisco.cli('show start | grep hostname')
+    print 'hostnames saves-improved' == cisco.cli('show start | grep hostname')
 
-    critical_code()
+    #critical_code()
 
 
 if __name__ == '__main__':
