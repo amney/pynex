@@ -1,8 +1,14 @@
-import cisco
+try:
+    import cisco
+except ImportError:
+    class cisco(object):
+        @staticmethod
+        def cli(command):
+            return '%s called to underlying ios' % command
 from functools import wraps
 
-class RollBack(object):
 
+class RollBack(object):
     def __init__(self, name):
         self.name = name
 
@@ -12,16 +18,16 @@ class RollBack(object):
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type:
-             print "Caught an error inside critical section"
-             print "Rolling back to checkpoint %s" % self.name
-             cisco.cli('rollback running-config checkpoint %s' % self.name)
+            print "Caught an error inside critical section"
+            print "Rolling back to checkpoint %s" % self.name
+            cisco.cli('rollback running-config checkpoint %s' % self.name)
         else:
-             print "Exited critical section without error"
+            print "Exited critical section without error"
 
 
 def saves(func):
-    'Call copy running-config startup-config after execution'
-    
+    """Call copy running-config startup-config after execution"""
+
     @wraps(func)
     def wrapper(*args, **kwargs):
         print 'Calling original function'
@@ -29,18 +35,18 @@ def saves(func):
 
         print 'Saving running config'
         cisco.cli('copy r s')
-        
+
         return result
-    
+
     return wrapper
 
 
 def saves_improved(vdc_all=False):
-    'Improve the @saves decorator by supplying an option for vdc-all'
+    """Improve the @saves decorator by supplying an option for vdc-all"""
 
-    def saves(func):
-        'Call copy running-config startup-config after execution'
-    
+    def saves_wrapper(func):
+        """Call copy running-config startup-config after execution"""
+
         @wraps(func)
         def wrapper(*args, **kwargs):
             print 'Calling original function'
@@ -50,9 +56,9 @@ def saves_improved(vdc_all=False):
             if vdc_all:
                 cisco.cli('copy r s vdc-all')
             else:
-                cisco.cli('copy r s vdc-all')
+                cisco.cli('copy r s')
             return result
 
         return wrapper
-    
-    return saves
+
+    return saves_wrapper
