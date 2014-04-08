@@ -6,7 +6,7 @@ A set of small utilities to improve the Cisco Nexus 7000 series command line imp
 
 Bear in mind that the code is mainly for demonstration purposes and therefore should be adapted before use in any serious situations.
 
-`utilites.py` cointains the pertinent code and `demo.py` contains examples of how it could be used.
+`utilities.py` cointains the pertinent code and `demo.py` contains examples of how it could be used.
 
 A quick example:
 
@@ -20,6 +20,6 @@ def set_hostname(hostname):
     cisco.cli('hostname %s' % hostname)
 ```
 
-For more information see the blog at tim-garner.co.uk
+For more information see the blog at [tim-garner.co.uk](tim-garner.co.uk)
 
     
